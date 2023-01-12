@@ -44,13 +44,16 @@ def signup():
 
 @app.route("/login", methods=['POST', 'GET'])
 def login():
+    #if session["id"]:
+        #return redirect(url_for("home"))
     if request.method == "GET":
         return render_template("login.html")
     elif request.method == "POST":
         user = User.query.filter_by(username=request.form["username"], password=request.form["password"]).first()
         if user:
             session['id'] = user.id
-            return redirect(url_for("index"))
+            session['username'] = user.username
+            return redirect(url_for("home" ))
         else:
             return redirect("/loginerror")
         
@@ -58,6 +61,9 @@ def login():
 def loginerror():
     return render_template("loginerror.html")
 
+@app.route("/home")
+def home():
+    return render_template("home.html")
 db.init_app(app)
 if __name__ == "__main__":
     app.run(debug=True)
